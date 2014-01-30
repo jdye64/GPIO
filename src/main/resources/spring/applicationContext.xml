@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+                           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+
+    <bean id="environmentPropertyPlaceholderConfigurer"
+          class="com.jeremydyer.gpio.util.EnvironmentPropertyPlaceholderConfigurer"
+          factory-method="createInstance">
+        <constructor-arg>
+            <map>
+                <entry key="defaultResourceLocation" value="gpio.properties"/>
+                <entry key="propertyfileSystemPropertyName" value="environmentFilename"/>
+                <entry key="environmentSystemPropertyname" value="environmentName"/>
+                <entry key="silent" value="true"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <context:spring-configured/>
+    <context:component-scan base-package="com.jeremydyer.gpio">
+        <context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
+    </context:component-scan>
+
+    <!--Provides a way to access the Spring ApplicationContext programatically from any class by calling ApplicationContextProvider.getApplicationContext()-->
+    <bean class="com.jeremydyer.gpio.util.SpringApplicationContextProvider"></bean>
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${dbDriverClassName}" />
+        <property name="url" value="${datasourceUrl}" />
+        <property name="username" value="${dbUserName}" />
+        <property name="password" value="${dbPassword}" />
+    </bean>
+
+
+    <bean id="txSpringManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <alias name="txSpringManager" alias="txManager"/>
+
+    <tx:annotation-driven transaction-manager="txSpringManager"/>
+
+</beans>

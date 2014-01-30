@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo "Stopping Dyer..."
+
+# handle Fedora systemd
+if [ -f /usr/bin/systemctl ];
+then
+   systemctl stop Dyer
+fi
+
+# handle CentOS upstart
+if [ -f /usr/bin/stop ];
+then
+   stop Dyer
+fi
+
+exit 0

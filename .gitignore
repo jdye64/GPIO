@@ -1,0 +1,22 @@
+.gradle
+out
+build
+target
+classes
+*.iml
+*.iws
+*.iml
+*.ipr
+
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# IDE files
+.classpath
+.project
+.settings
+.idea

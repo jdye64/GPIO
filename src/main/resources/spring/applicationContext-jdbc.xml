@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+
+    <import resource="applicationContext.xml"/>
+
+    <bean id="baseJdbc" abstract="true">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="locationDao" class="com.jeremydyer.gpio.dao.jdbc.LocationDaoJdbc" parent="baseJdbc" />
+
+    <!--
+    <bean id="userDao" class="com.everifile.renovo.server.persistence.jdbc.UserDaoJdbc" parent="baseJdbc" scope="singleton">
+        <property name="systemUsername" value="support@everifile.com"/>
+    </bean>
+
+    <bean id="roleDao" class="com.everifile.renovo.server.persistence.jdbc.RoleDaoJdbc"  parent="baseJdbc"/>
+    <bean id="requiredActionDataSource" class="com.everifile.renovo.server.persistence.jdbc.RequiredActionDaoJdbc" parent="baseJdbc"/>
+    <bean id="complianceWorkflowDao" class="com.everifile.renovo.server.persistence.jdbc.ComplianceWorkflowDaoJdbc" parent="baseJdbc"/>
+    <bean id="ofacReportDataSource" class="com.everifile.renovo.server.persistence.jdbc.OfacReportDaoJdbc" parent="baseJdbc"/>
+    <bean id="fdaDataSource" class="com.everifile.renovo.server.persistence.jdbc.FdaDebarmentDaoJdbc" parent="baseJdbc"/>
+    <bean id="oficReportDataSource" class="com.everifile.renovo.server.persistence.jdbc.OficReportDaoJdbc" parent="baseJdbc"/>
+    <bean id="transUnionSubscriberReportDataSource" class="com.everifile.renovo.server.persistence.jdbc.TransUnionSubscriberDaoJdbc" parent="baseJdbc"/>
+    <bean id="reportCheckRetryDao" class="com.everifile.renovo.server.persistence.jdbc.ReportCheckRetryDaoJdbc" parent="baseJdbc"/>
+    <bean id="auditEventDao" class="com.everifile.renovo.server.persistence.jdbc.AuditEventDaoJdbc" parent="baseJdbc"/>
+    <bean id="auditPublisher" class="com.everifile.renovo.server.manager.AuditPublisher" factory-method="createInstance"/>
+    <bean id="userResponseDao" class="com.everifile.renovo.server.persistence.jdbc.UserTestResponseDaoJdbc" parent="baseJdbc"/>
+    <bean id="applicantDao" class="com.everifile.renovo.server.persistence.jdbc.ApplicantDaoJdbc" parent="baseJdbc"/>
+    <bean id="reportFulfillmentDao" class="com.everifile.renovo.server.persistence.jdbc.ReportFulfillmentDaoJdbc" parent="baseJdbc"/>
+    <bean id="reportPermissionDao" class="com.everifile.renovo.server.persistence.jdbc.ReportPermissionDaoJdbc" parent="baseJdbc"/>
+    <bean id="companyAccountDao" class="com.everifile.renovo.server.persistence.jdbc.CompanyAccountDaoJdbc" parent="baseJdbc"/>
+    <bean id="companyAccountNoteDao" class="com.everifile.renovo.server.persistence.jdbc.CompanyAccountNoteDaoJdbc" parent="baseJdbc"/>
+    <bean id="addressDao" class="com.everifile.renovo.server.persistence.jdbc.AddressDaoJdbc" parent="baseJdbc"/>
+    <bean id="personaDao" class="com.everifile.renovo.server.persistence.jdbc.PersonaDaoJdbc" parent="baseJdbc"/>
+    <bean id="secQuestionsAnswersJdbcDao" class="com.everifile.renovo.server.persistence.jdbc.SecQuestionsAnswersJdbcDao" parent="baseJdbc"/>
+    <bean id="appealDao" class="com.everifile.renovo.server.persistence.jdbc.AppealDaoJdbc" parent="baseJdbc"/>
+    <bean id="accountJudgementDao" class="com.everifile.renovo.server.persistence.jdbc.AccountJudgementDaoJdbc" parent="baseJdbc"/>
+    <bean id="testResultDao" class="com.everifile.renovo.server.persistence.jdbc.TestResultDaoJdbc" parent="baseJdbc"/>
+    <bean id="documentDao" class="com.everifile.renovo.server.persistence.jdbc.DocumentDaoJdbc" parent="baseJdbc"/>
+    <bean id="requiredActionDao" class="com.everifile.renovo.server.persistence.jdbc.RequiredActionDaoJdbc" parent="baseJdbc"/>
+    <bean id="reportDao" class="com.everifile.renovo.server.persistence.jdbc.ReportDaoJdbc" parent="baseJdbc"/>
+    <bean id="reportCheckDao" class="com.everifile.renovo.server.persistence.jdbc.ReportCheckDaoJdbc" parent="baseJdbc"/>
+    <bean id="onlineFormConfigDao" class="com.everifile.renovo.server.persistence.jdbc.OnlineFormConfigDaoJdbc" parent="baseJdbc"/>
+    <bean id="digitalSignatureTemplateDao" class="com.everifile.renovo.server.persistence.jdbc.DigitalSignatureTemplateDoaJdbc" parent="baseJdbc"/>
+    <bean id="testTemplateDao" class="com.everifile.renovo.server.persistence.jdbc.TestTemplateDaoJdbc" parent="baseJdbc"/>
+    <bean id="answerDao" class="com.everifile.renovo.server.persistence.jdbc.AnswerDaoJdbc" parent="baseJdbc"/>
+    <bean id="questionDao" class="com.everifile.renovo.server.persistence.jdbc.QuestionDaoJdbc" parent="baseJdbc"/>
+    <bean id="dependentActionDao" class="com.everifile.renovo.server.persistence.jdbc.DependentActionDaoJdbc" parent="baseJdbc"/>
+    <bean id="reportCheckStatusDao" class="com.everifile.renovo.server.persistence.jdbc.ReportCheckStatusDaoJdbc" parent="baseJdbc"/>
+    <bean id="productTypeDao" class="com.everifile.renovo.server.persistence.jdbc.ProductTypeDaoJdbc" parent="baseJdbc"/>
+    <bean id="productTypeComplianceDao" class="com.everifile.renovo.server.persistence.jdbc.ProductTypeComplianceDaoJdbc" parent="baseJdbc"/>
+    <bean id="requiredDataDao" class="com.everifile.renovo.server.persistence.jdbc.RequiredDataDaoJdbc" parent="baseJdbc"/>
+    <bean id="conditionalLogicDao" class="com.everifile.renovo.server.persistence.jdbc.ConditionalLogicDaoJdbc" parent="baseJdbc"/>
+    <bean id="requiredActionReportConfigDao" class="com.everifile.renovo.server.persistence.jdbc.RequiredActionReportConfigDaoJdbc" parent="baseJdbc"/>
+    <bean id="signatureEnvelopeDao" class="com.everifile.renovo.server.persistence.jdbc.SignatureEnvelopeDaoJdbc" parent="baseJdbc"/>
+    <bean id="dataRestrictionRuleDao" class="com.everifile.renovo.server.persistence.jdbc.DataRestrictionRuleDaoJdbc" parent="baseJdbc"/>
+    <bean id="engagementLocationDao" class="com.everifile.renovo.server.persistence.jdbc.EngagementLocationDaoJdbc" parent="baseJdbc"/>
+    <bean id="contractEngagementDao" class="com.everifile.renovo.server.persistence.jdbc.ContractEngagementDaoJdbc" parent="baseJdbc"/>
+    <bean id="businessReferenceDao" class="com.everifile.renovo.server.persistence.jdbc.BusinessReferenceDaoJdbc" parent="baseJdbc"/>
+    <bean id="rejectionReasonDao" class="com.everifile.renovo.server.persistence.jdbc.RejectionReasonDaoJdbc" parent="baseJdbc"/>
+    <bean id="bankingInformationDao" class="com.everifile.renovo.server.persistence.jdbc.BankingInformationDaoJdbc" parent="baseJdbc"/>
+    <bean id="reportCheckActionDao" class="com.everifile.renovo.server.persistence.jdbc.ReportCheckActionDaoJdbc" parent="baseJdbc"/>
+    <bean id="salesforceRecordAssociationDao" class="com.everifile.renovo.server.persistence.jdbc.SalesforceRecordAssociationDaoJdbc" parent="baseJdbc"/>
+    <bean id="verificationQuestionDao" class="com.everifile.renovo.server.persistence.jdbc.VerificationQuestionDaoJdbc" parent="baseJdbc"/>
+    <bean id="printerDao" class="com.everifile.renovo.server.persistence.jdbc.PrinterDaoJdbc" parent="baseJdbc"/>
+    <bean id="printJobDao" class="com.everifile.renovo.server.persistence.jdbc.PrintJobDaoJdbc" parent="baseJdbc"/>
+    <bean id="workflowProgramDao" class="com.everifile.renovo.server.persistence.jdbc.WorkflowProgramDaoJdbc" parent="baseJdbc"/>
+    <bean id="complianceTypeProgramRefDao" class="com.everifile.renovo.server.persistence.jdbc.ComplianceTypeProgramRefDaoJdbc" parent="baseJdbc"/>
+    <bean id="applicantNoteDao" class="com.everifile.renovo.server.persistence.jdbc.ApplicantNoteDaoJdbc" parent="baseJdbc"/>
+    <bean id="applicantStatusDao" class="com.everifile.renovo.server.persistence.jdbc.ApplicantStatusDaoJdbc" parent="baseJdbc"/>
+
+    <bean id="itemDao" class="com.everifile.renovo.server.persistence.jdbc.ItemDaoJdbc" parent="baseJdbc"/>
+    <bean id="shipmentDao" class="com.everifile.renovo.server.persistence.jdbc.ShipmentDaoJdbc" parent="baseJdbc"/>
+    <bean id="nonReportProductDao" class="com.everifile.renovo.server.persistence.jdbc.NonReportProductDaoJdbc" parent="baseJdbc"/>
+    <bean id="orderDao" class="com.everifile.renovo.server.persistence.jdbc.OrderDaoJdbc" parent="baseJdbc"/>
+    <bean id="contactDao" class="com.everifile.renovo.server.persistence.jdbc.ContactDaoJdbc" parent="baseJdbc"/>
+    <bean id="formDefinitionDao" class="com.everifile.renovo.server.persistence.jdbc.FormDefinitionDaoImpl" parent="baseJdbc"/>
+    <bean id="formFieldDefinitionDao" class="com.everifile.renovo.server.persistence.jdbc.FormFieldDefinitionDaoImpl" parent="baseJdbc"/>
+    <bean id="formDataDao" class="com.everifile.renovo.server.persistence.jdbc.FormDataDaoImpl" parent="baseJdbc"/>
+    <bean id="formFieldDataDao" class="com.everifile.renovo.server.persistence.jdbc.FormFieldDataDaoImpl" parent="baseJdbc"/>
+    <bean id="ecodeRegistryDao" class="com.everifile.renovo.server.persistence.jdbc.ECodeRegistryDaoJdbc" parent="baseJdbc"/>
+    <bean id="passwordResetTokenDao" class="com.everifile.renovo.server.persistence.jdbc.PasswordResetTokenDaoImpl" parent="baseJdbc"/>
+    <bean id="dataProviderDao" class="com.everifile.renovo.server.persistence.jdbc.DataProviderDaoJdbc" parent="baseJdbc"/>
+
+    <bean id="notificationDeterminatorDao" class="com.everifile.renovo.server.persistence.jdbc.NotificationDeterminatorDaoJdbc" parent="baseJdbc"/>
+    <bean id="notificationTypeDao" class="com.everifile.renovo.server.persistence.jdbc.NotificationTypeDaoJdbc" parent="baseJdbc"/>
+    <bean id="notificationUserPreferenceDao" class="com.everifile.renovo.server.persistence.jdbc.NotificationUserPreferenceDaoJdbc" parent="baseJdbc" />
+    <bean id="notificationParamDao" class="com.everifile.renovo.server.persistence.jdbc.NotificationParamDaoJdbc" parent="baseJdbc" />
+    <bean id="emailNotificationConfigurationDao" class="com.everifile.renovo.server.persistence.jdbc.EmailNotificationConfigurationDaoJdbc" parent="baseJdbc" />
+    <bean id="evapsDao" class="com.everifile.renovo.server.persistence.jdbc.EvapsDaoJdbc" parent="baseJdbc" />
+
+
+    <bean id="trainingRequiredDao" class="com.everifile.renovo.server.persistence.jdbc.TrainingRequiredDaoJdbc" parent="baseJdbc" />
+
+
+    <bean id="enterpriseAssociationDao" class="com.everifile.renovo.server.persistence.jdbc.EnterpriseAssociationDaoJdbc" parent="baseJdbc" />
+    <bean id="enterpriseAssociationMappingDao" class="com.everifile.renovo.server.persistence.jdbc.EnterpriseAssociationMappingDaoJdbc" parent="baseJdbc" />
+
+
+    <bean id="vendorRelationshipDao" class="com.everifile.renovo.server.persistence.jdbc.VendorRelationshipDaoJdbc" parent="baseJdbc" />
+    -->
+
+</beans>

@@ -1,0 +1,151 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+import java.text.SimpleDateFormat
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+//apply plugin: 'rpm'
+
+project.sourceCompatibility = 1.7
+project.targetCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile ("com.yammer.dropwizard:dropwizard-core:0.6.2") {
+        exclude group: 'org.eclipse.jetty.orbit'
+    }
+    compile "com.yammer.dropwizard:dropwizard-db:0.6.2"
+    compile "org.testng:testng:6.8.7"
+    compile "org.apache.geronimo.specs:geronimo-servlet_3.0_spec:1.0"
+    compile 'org.projectlombok:lombok:0.11.6'
+    compile "org.springframework:spring-web:$springVersion"
+    compile "org.springframework:spring-jdbc:$springVersion"
+    compile "org.springframework:spring-aspects:$springVersion"
+    compile "javax.inject:javax.inject:1"
+    compile "commons-dbcp:commons-dbcp:1.4"
+    compile "mysql:mysql-connector-java:5.1.28"
+
+    compile "javax.persistence:persistence-api:1.0.2"
+    compile "commons-lang:commons-lang:2.6"
+    compile "org.springframework.security:spring-security-web:$springSecurityVersion"
+    compile "org.springframework.security:spring-security-config:$springSecurityVersion"
+    compile "org.springframework.security:spring-security-aspects:$springSecurityVersion"
+
+}
+
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.jeremydyer.gpio.GPIOService'
+        //attributes 'Implementation-Title': ‘ACWEb’ ,'Implementation-Version': version
+    }
+}
+
+/**
+ * Gradle Shadow plugin integration
+ */
+buildscript {
+    repositories {
+        maven {
+            name 'Gradle Shadow'
+            url 'http://dl.bintray.com/content/johnrengelman/gradle-plugins'
+        }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.gradle.plugins:shadow:0.7.4'
+        classpath 'com.trigonic:gradle-rpm-plugin:1.4'
+    }
+}
+
+ext {
+    release = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
+}
+
+apply plugin: 'shadow'
+
+task run(dependsOn: 'classes', type: JavaExec) {
+    main = 'com.jeremydyer.gpio.GPIOService'
+    classpath = sourceSets.main.runtimeClasspath
+    args 'server','Brew.yml'
+}
+
+task runShadow(type:Exec, dependsOn: 'shadow') {
+    workingDir = "build/libs"
+    commandLine = ['java', '-jar', '-server', "Brew-$version-shadow.jar",'server','../../Brew.yml']
+}
+
+task bdd(type: Exec, dependsOn: 'shadow') {
+    description = "Tests BDDs against the running application"
+
+    // fix to run cucumber on a particular infernal OS properly
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine 'cmd', '/c', 'bundle.bat', 'exec', 'cucumber'
+    }
+    else {
+        commandLine = ['cucumber']
+    }
+    workingDir = "./src/test/resources/bdd"
+    def oneJarProcess = null
+
+    doFirst{
+        println "Starting application on separate thread..."
+        Thread.startDaemon {
+            oneJarProcess = "java -jar -server build/libs/Brew-$version-shadow.jar server Brew.yml".execute()
+        }
+        println "Waiting for application to start before executing tests..."
+        addShutdownHook {
+            println "Shutting down application"
+            oneJarProcess.destroy()
+        }
+    }
+
+}
+
+/**
+ * NATIVE LINUX PACKAGING SUPPORT
+ */
+
+/**
+ * DEBIAN / RPM integration
+ */
+task deb(dependsOn: 'shadow') << {
+
+    //define full Debian package name and version number
+    ext.debian = "Dyer-${version}-${project.ext.release}"
+
+    copy {
+        from "src/deploy/resources/config"
+        from "src/deploy/resources/upstart/debian"
+        into "build/distributions/$debian"
+    }
+    copy {
+        from "src/deploy/resources/deb"
+        into "build/distributions/$debian/DEBIAN"
+    }
+    copy {
+        from("build/libs") {
+            include "Dyer-$version-shadow.jar"
+            //remove version number from actual file installed on a server, removes need to update Dyer.conf every time
+            rename { String fileName ->
+                fileName.replace("-$version", '')
+            }
+        }
+        into "build/distributions/$debian/opt/Dyer"
+    }
+
+    //replace version in Debian control file
+    println "Updating version in Debian control file"
+    String contents = file(new File( "build/distributions/$debian/DEBIAN/control" )).getText( 'UTF-8')
+    contents = contents.replaceAll( '##VERSION##', "$version")
+    file(new File("build/distributions/$debian/DEBIAN/control")).write(contents,'UTF-8')
+
+    println "Compiling ${debian}.deb using Debian packaging tools..."
+    exec {
+        commandLine = ['dpkg-deb',"--build","$debian"]
+        workingDir = "build/distributions"
+    }
+}

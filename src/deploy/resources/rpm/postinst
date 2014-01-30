@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "Initializing Dyer..."
+
+if [ -f /usr/bin/systemctl ];
+then
+   systemctl daemon-reload
+fi
+
+exit 0

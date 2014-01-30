@@ -1,0 +1,30 @@
+# PRODUCTION SETTINGS FOR SERVER INSTALLATIONS
+
+http:
+  rootPath: /dyer/rest/*
+  port: 8080
+  adminPort: 8081
+  requestLog:
+    console:
+      enabled: false
+    file:
+      enabled: true
+      currentLogFilename: /var/log/Dyer/requests.log
+      archive: true
+      archivedLogFilenamePattern: /var/log/Dyer/requests-%d.log.gz
+      archivedFileCount: 5
+
+# Logging settings.
+logging:
+  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
+  level: WARN
+  loggers:
+    "com.yammer.dropwizard": INFO
+  console:
+    enabled: false
+  file:
+    enabled: true
+    currentLogFilename: /var/log/Dyer/Dyer.log
+    archive: true
+    archivedLogFilenamePattern: /var/log/Dyer/Dyer-%d.log.gz
+    archivedFileCount: 5
